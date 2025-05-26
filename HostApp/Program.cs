@@ -48,11 +48,9 @@ namespace HostApp
 #else
             var flavour = "Release";
 #endif
-            var pluginPath = Path.GetFullPath(
-                string.Concat(Directory.GetCurrentDirectory(), $"\\..\\..\\..\\..\\Plugin\\bin\\{flavour}\\net8.0"));
-            var loadContext = new PluginLoadContext(pluginPath);
+            var loadContext = new PluginLoadContext(Directory.GetCurrentDirectory());
 
-            var pluginAssembly = loadContext.LoadFromAssemblyPath($"{pluginPath}\\plugin.dll");
+            var pluginAssembly = loadContext.LoadFromAssemblyPath($"{Directory.GetCurrentDirectory()}\\plugin.dll");
             var pluginType = pluginAssembly.GetType("Plugin.TestPlugin");
             if (pluginType == null)
             {

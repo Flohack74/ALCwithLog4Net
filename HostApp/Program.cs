@@ -93,13 +93,13 @@ namespace HostApp
 
         protected override Assembly Load(AssemblyName assemblyName)
         {
-            string? assemblyPath = _resolver.ResolveAssemblyToPath(assemblyName);
-            if (assemblyPath != null)
+            var assembly = base.Load(assemblyName);
+            if (assembly != null)
             {
-                return LoadFromAssemblyPath(assemblyPath);
+                return assembly;
             }
-
-            return null!;
+            string? assemblyPath = _resolver.ResolveAssemblyToPath(assemblyName);
+            return assemblyPath != null ? LoadFromAssemblyPath(assemblyPath) : null!;
         }
     }
 }

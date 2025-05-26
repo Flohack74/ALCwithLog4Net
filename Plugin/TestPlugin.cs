@@ -1,13 +1,10 @@
-﻿using System.Drawing;
-using log4net;
+﻿using log4net;
 
 namespace Plugin
 {
     public class TestPlugin
     {
         private ILog _testLogger;
-
-        private static Size IconSize => new Size(18, 18);
 
         public TestPlugin()
         {

@@ -1,6 +1,5 @@
 ﻿
 using System.Diagnostics;
-using DevExpress.Pdf.ContentGeneration.Interop;
 using System.Reflection;
 using System.Runtime.Loader;
 
@@ -29,11 +28,13 @@ namespace HostApp
                 Thread.Sleep(500);
             }
 
+            //Ideally the weak references should be dead at this point
             foreach (var weakReference in references)
             {
                 Console.WriteLine($"Reference alive? {weakReference.IsAlive}");
             }
 
+            //Check here with profiler if the plugin and/or log4net assembly is still loaded
             Debugger.Launch();
         }
     }
@@ -48,28 +49,8 @@ namespace HostApp
             var flavour = "Release";
 #endif
             var pluginPath = Path.GetFullPath(
-                string.Concat(Directory.GetCurrentDirectory(), $"\\..\\..\\..\\..\\Plugin\\bin\\{flavour}\\net10.0"));
+                string.Concat(Directory.GetCurrentDirectory(), $"\\..\\..\\..\\..\\Plugin\\bin\\{flavour}\\net8.0"));
             var loadContext = new PluginLoadContext(pluginPath);
-
-            //Bootstrapping .net libraries seems to prevent stuck 
-            var charpDllLocation = typeof(Microsoft.CSharp.RuntimeBinder.Binder).Assembly.Location;
-            var rootPath = Path.GetDirectoryName(charpDllLocation);
-            var assemblies = new List<string>
-            {
-                //"Microsoft.CSharp.dll",
-                //"System.Threading.dll",
-                //"System.Private.Xml.dll",
-                //"System.Console.dll",
-                //"System.Private.Uri.dll",
-                //"System.Collections.Specialized.dll",
-                //"System.Collections.Concurrent.dll",
-                //"System.Configuration.dll"
-
-            };
-            foreach (var assembly in assemblies)
-            {
-                loadContext.LoadFromAssemblyPath(Path.Combine(rootPath, assembly));
-            }
 
             var pluginAssembly = loadContext.LoadFromAssemblyPath($"{pluginPath}\\plugin.dll");
             var pluginType = pluginAssembly.GetType("Plugin.TestPlugin");
@@ -79,7 +60,6 @@ namespace HostApp
                 return null!;
             }
 
-            // Instanz erzeugen und Methode aufrufen
             object? pluginInstance = Activator.CreateInstance(pluginType);
             MethodInfo? runMethod = pluginType.GetMethod("TestMe");
 

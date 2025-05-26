@@ -48,7 +48,7 @@ namespace HostApp
 #else
             var flavour = "Release";
 #endif
-            var loadContext = new PluginLoadContext(Directory.GetCurrentDirectory());
+            var loadContext = new PluginLoadContext(Path.Combine(Directory.GetCurrentDirectory(), "HostApp.dll"));
 
             var pluginAssembly = loadContext.LoadFromAssemblyPath($"{Directory.GetCurrentDirectory()}\\plugin.dll");
             var pluginType = pluginAssembly.GetType("Plugin.TestPlugin");
